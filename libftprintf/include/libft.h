@@ -105,4 +105,6 @@ size_t				ft_wstrlen(wchar_t *wstr);
 
 int					ft_pow(int base, int pow);
 
+int					ft_printf(const char *format, ...);
+
 #endif

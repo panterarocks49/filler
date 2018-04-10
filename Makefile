@@ -10,49 +10,39 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = fdf
+NAME = filler
 RM = /bin/rm -f
 CFLAGS = -Wall -Wextra -Werror
 
 # fdf
-FILES = main render read image mat_utils transformations map key_hooks error vert color
-FDF_INC = -I ./includes/
+FILES = main
+MAIN_INC = -I ./include/
 SRC_DIR = ./src/
 CFILES = $(patsubst %, $(SRC_DIR)%.c, $(FILES))
 OFILES = $(patsubst %, %.o, $(FILES))
 
-# mlx lib
-MLX_DIR = ./minilibx_macos/
-MLX_LIB	= $(addprefix $(MLX_DIR), mlx.a)
-MLX_INC = -I $(MLX_DIR)
-MLX_LINK = -L $(MLX_DIR) -l mlx -framework OpenGL -framework AppKit
-
-# libft lib
-LFT_DIR = ./libft/
-LFT_LIB = $(addprefix $(LFT_DIR), ft.a)
-LFT_INC = -I $(LFT_DIR)
-LFT_LINK = -L $(LFT_DIR) -l ft
+# libftprintf lib
+LFT_DIR = ./libftprintf/
+LFT_LIB = $(addprefix $(LFT_DIR), ftprintf.a)
+LFT_INC = -I $(LFT_DIR)/include/
+LFT_LINK = -L $(LFT_DIR) -l ftprintf
 
 .PHONY: all clean fclean re
 
-all: $(MLX_LIB) $(LFT_LIB) $(NAME)
+all: $(LFT_LIB) $(NAME)
 
 $(OFILES):
-	@gcc $(CFLAGS) $(FDF_INC) $(MLX_INC) $(LFT_INC) -c $(CFILES)
-
-$(MLX_LIB):
-	@make -C $(MLX_DIR)
+	@gcc $(CFLAGS) $(MAIN_INC) $(LFT_INC) -c $(CFILES)
 
 $(LFT_LIB):
 	@make -C $(LFT_DIR)
 
 $(NAME): $(OFILES)
-	@gcc $(CFLAGS) $(OFILES) $(MLX_LINK) $(LFT_LINK) -o $(NAME)
+	@gcc $(CFLAGS) $(OFILES) $(LFT_LINK) -o $(NAME)
 
 clean:
 	@$(RM) $(OFILES)
 	@make -C $(LFT_DIR) clean
-	@make -C $(MLX_DIR) clean
 
 fclean: clean
 	@$(RM) $(NAME)

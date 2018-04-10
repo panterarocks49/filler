@@ -55,8 +55,6 @@ typedef struct		s_handler
 	void		(*handler)(t_env *, t_param *);
 }					t_handler;
 
-int					ft_printf(const char *format, ...);
-
 void				pf_itoa(t_env *env, t_param *param, intmax_t d);
 int					calc_width(t_env *env, t_param *param, int size, int sign);
 char				intmax_sign(t_param *param, intmax_t d);
