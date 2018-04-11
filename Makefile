@@ -10,12 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = filler
+NAME = jbrown.filler
 RM = /bin/rm -f
 CFLAGS = -Wall -Wextra -Werror
 
-# fdf
-FILES = main
+# filler
+FILES = main read check place
 MAIN_INC = -I ./include/
 SRC_DIR = ./src/
 CFILES = $(patsubst %, $(SRC_DIR)%.c, $(FILES))

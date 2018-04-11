@@ -24,6 +24,4 @@ typedef struct	s_file
 	char	*buf;
 }				t_file;
 
-int				get_next_line(const int fd, char **line);
-
 #endif

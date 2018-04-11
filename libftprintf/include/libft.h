@@ -107,4 +107,6 @@ int					ft_pow(int base, int pow);
 
 int					ft_printf(const char *format, ...);
 
+int					get_next_line(const int fd, char **line);
+
 #endif
