@@ -16,6 +16,8 @@ static int	token_heat(t_env *env, int x, int y)
 {
 	int	i;
 	int	j;
+	int	tmp1;
+	int tmp2;
 	int	x_original;
 	int	heat;
 
@@ -28,8 +30,16 @@ static int	token_heat(t_env *env, int x, int y)
 		x = x_original;
 		while (j < env->token.width)
 		{
+			tmp1 = x;
+			tmp2 = y;
+			if (x < 0)
+				x = env->map.width + x;
+			if (y < 0)
+				y = env->map.height + y;
 			if (env->token.str[i * env->token.width + j] == '*')
 				heat += env->map.heat[y * env->map.width + x];
+			x = tmp1;
+			y = tmp2;
 			x++;
 			j++;
 		}

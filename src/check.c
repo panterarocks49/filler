@@ -16,6 +16,8 @@ int		is_valid_place(t_env *env, int x, int y)
 {
 	int i;
 	int j;
+	int	tmp1;
+	int tmp2;
 	int original_x;
 	int	touching;
 
@@ -30,11 +32,19 @@ int		is_valid_place(t_env *env, int x, int y)
 		{
 			if (env->token.str[i * env->token.width + j] == '*')
 			{
-				if (x < 0 || y < 0 || x >= env->map.width || y >= env->map.height
+				tmp1 = x;
+				tmp2 = y;
+				if (x < 0)
+					x = env->map.width + x;
+				if (y < 0)
+					y = env->map.height + y;
+				if (x >= env->map.width || y >= env->map.height
 					|| env->map.str[y * env->map.width + x] == env->opponent)
 					return (0);
 				if (env->map.str[y * env->map.width + x] == env->player)
 					touching++;
+				x = tmp1;
+				y = tmp2;
 			}
 			j++;
 			x++;

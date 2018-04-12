@@ -38,6 +38,7 @@ void		print_heatmap(t_env *env)
 		fprintf(env->debug, "\n");
 		i++;
 	}
+	fprintf(env->debug, "\n");
 }
 
 int			main(void)
