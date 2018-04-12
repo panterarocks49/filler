@@ -29,11 +29,11 @@ int		is_valid_place(t_env *env, int x, int y)
 		while (j < env->token.width)
 		{
 			if (env->token.str[i * env->token.width + j] == '*')
-			{// add other side
-				if (x < 0 || y < 0 || (env->map.str[y * env->map.width + x] != '.'
-					&& ft_toupper(env->map.str[y * env->map.width + x]) != env->player))
+			{
+				if (x < 0 || y < 0 || x >= env->map.width || y >= env->map.height
+					|| env->map.str[y * env->map.width + x] == env->opponent)
 					return (0);
-				if (ft_toupper(env->map.str[y * env->map.width + x]) == env->player)
+				if (env->map.str[y * env->map.width + x] == env->player)
 					touching++;
 			}
 			j++;

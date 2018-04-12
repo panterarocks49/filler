@@ -15,7 +15,7 @@ RM = /bin/rm -f
 CFLAGS = -Wall -Wextra -Werror
 
 # filler
-FILES = main read check place
+FILES = main read check place heatmap
 MAIN_INC = -I ./include/
 SRC_DIR = ./src/
 CFILES = $(patsubst %, $(SRC_DIR)%.c, $(FILES))

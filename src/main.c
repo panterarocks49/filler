@@ -21,9 +21,23 @@ static FILE	*start_debug(void)
 	return (fp);
 }
 
-static void	end_debug(FILE *fp)
+void		print_heatmap(t_env *env)
 {
-	fclose(fp);
+	int		i;
+	int		j;
+
+	i = 0;
+	while (i < env->map.height)
+	{
+		j = 0;
+		while (j < env->map.width)
+		{
+			fprintf(env->debug, "%3d", env->map.heat[i * env->map.width + j]);
+			j++;
+		}
+		fprintf(env->debug, "\n");
+		i++;
+	}
 }
 
 int			main(void)
@@ -38,20 +52,26 @@ int			main(void)
 	read_player(&env);
 	read_map_size(&env);
 	if (!(env.map.str = ft_strnew(env.map.height * env.map.width))
-		|| !(env.token.str = ft_strnew(env.map.height * env.map.width)))
+		|| !(env.token.str = ft_strnew(env.map.height * env.map.width))
+		|| !(env.map.heat = (int *)malloc(sizeof(int) * env.map.height * env.map.width)))
 		return (-1);
 	read_map(&env);
+	create_heatmap(&env);
 	read_token(&env);
 	place_token(&env);
+	//int i = 0;
 	while (1)
 	{
 		skip_line();
 		read_map(&env);
+		create_heatmap(&env);
+		print_heatmap(&env);
+		fprintf(env.debug, "\n\n");
 		read_token(&env);
 		place_token(&env);
 	}
 
-	end_debug(env.debug);
+	fclose(env.debug);
 
 	return (0);
 }

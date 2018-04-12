@@ -29,6 +29,7 @@ void	read_player(t_env *env)
 	line = NULL;
 	get_next_line(0, &line);
 	env->player = (ft_atoi(line + 10) == 1 ? 'O' : 'X');
+	env->opponent = (ft_atoi(line + 10) == 1 ? 'X' : 'O');
 	free(line);
 }
 

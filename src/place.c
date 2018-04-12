@@ -12,42 +12,60 @@
 
 #include "filler.h"
 
-static void	fill_algo(t_env *env)
+static int	token_heat(t_env *env, int x, int y)
+{
+	int	i;
+	int	j;
+	int	x_original;
+	int	heat;
+
+	i = 0;
+	x_original = x;
+	heat = 0;
+	while (i < env->token.height)
+	{
+		j = 0;
+		x = x_original;
+		while (j < env->token.width)
+		{
+			if (env->token.str[i * env->token.width + j] == '*')
+				heat += env->map.heat[y * env->map.width + x];
+			x++;
+			j++;
+		}
+		y++;
+		i++;
+	}
+	return (heat);
+}
+
+void		place_token(t_env *env)
 {
 	int	x;
 	int	y;
+	int	min;
 
-	fprintf(env->debug, "%s", env->token.str);
 	y = 1 - env->token.height;
-	while (y < env->map.height - env->token.height)
+	env->token.x = 0;
+	env->token.y = 0;
+	env->token.min = 2147483647;
+	while (y < env->map.height)
 	{
 		x = 1 - env->token.width;
-		while (x < env->map.width - env->token.width)
+		while (x < env->map.width)
 		{
 			if (is_valid_place(env, x, y))
 			{
-				ft_printf("%d %d\n", y, x);
-				return ;
+				if (env->token.min > (min = token_heat(env, x, y)))
+				{
+					env->token.x = x;
+					env->token.y = y;
+					env->token.min = min;
+				}
 			}
 			x++;
 		}
 		y++;
 	}
-	ft_printf("0 0\n");
-}
-
-//act like my piece is eating his
-//find a direction from my piece to his
-//find a left and right to search for a place
-//	will be up, down, left, right
-//exand left or right depending on where he last expanded. do opposite?
-static void	spider_algo(t_env *env)
-{
-
-}
-
-void		place_token(t_env *env)
-{
-	//fill_algo(env);
-	siper_algo(env);
+	ft_printf("%d %d\n", env->token.y, env->token.x);
 }
