@@ -12,44 +12,41 @@
 
 #include "filler.h"
 
-// static int	check_around(t_env *env, int i, int j)
-// {
-// 	int	y;
-// 	int	x;
-// 	int	tmp1;
-// 	int tmp2;
-// 	int	idx;
-// 	int	count;
+static int	check_around(t_env *env, int i, int j, char c)
+{
+	int	y;
+	int	x;
+	int	tmp1;
+	int tmp2;
+	int	count;
 
-// 	y = i - 1;
-// 	count = 0;
-// 	while (y <= i + 1)
-// 	{
-// 		x = j - 1;
-// 		while (x <= j + 1)
-// 		{
-// 			tmp1 = x;
-// 			tmp2 = y;
-// 			if (x < 0)
-// 				x = env->map.width + x;
-// 			if (y < 0)
-// 				y = env->map.height + y;
-// 			if (x >= env->map.width)
-// 				x = x - env->map.width;
-// 			if (y >= env->map.height)
-// 				y = y - env->map.height;
-// 			idx = y * env->map.width + x;
-// 			if (idx < env->map.width * env->map.height
-// 				&& env->map.str[idx] == env->opponent)
-// 				count++;
-// 			x = tmp1;
-// 			y = tmp2;
-// 			x++;
-// 		}
-// 		y++;
-// 	}
-// 	return (count);
-// }
+	y = i - 2;
+	count = 0;
+	while (y <= i + 2)
+	{
+		x = j - 2;
+		while (x <= j + 2)
+		{
+			tmp1 = x;
+			tmp2 = y;
+			if (x < 0)
+				x = env->map.width + x;
+			if (y < 0)
+				y = env->map.height + y;
+			if (x >= env->map.width)
+				x = x - env->map.width;
+			if (y >= env->map.height)
+				y = y - env->map.height;
+			if (env->map.str[y * env->map.width + x] == c)
+				count++;
+			x = tmp1;
+			y = tmp2;
+			x++;
+		}
+		y++;
+	}
+	return (count);
+}
 
 static void	init_heatmap(t_env *env)
 {
@@ -65,21 +62,13 @@ static void	init_heatmap(t_env *env)
 			if (env->map.str[i * env->map.width + j] == env->player)
 				env->map.heat[i * env->map.width + j] = -2;
 			else if (env->map.str[i * env->map.width + j] == env->opponent)
-				env->map.heat[i * env->map.width + j] = 1;//check_around(env, i, j);
+				env->map.heat[i * env->map.width + j] = check_around(env, i, j, env->opponent);
 			else
 				env->map.heat[i * env->map.width + j] = -1;
 			j++;
 		}
 		i++;
 	}
-}
-
-static int	zero_min(int a, int b)
-{
-	if (a < 0 || b < 0)
-		return (FT_MAX(a, b));
-	else
-		return (FT_MIN(a, b));
 }
 
 static int	min_around(t_env *env, int i, int j)
@@ -113,7 +102,7 @@ static int	min_around(t_env *env, int i, int j)
 			idx = y * env->map.width + x;
 			if (y < env->map.height && x < env->map.width
 				&& idx != i * env->map.width + j)
-				min = zero_min(min, env->map.heat[idx]);
+				min = abs_min(min, env->map.heat[idx]);
 			x = tmp1;
 			y = tmp2;
 			x++;
@@ -150,24 +139,51 @@ static void	fill_heatmap(t_env *env)
 	}
 }
 
-// static int	is_not_filled(t_env *env)
+// static void	mark_last_piece(t_env *env)
 // {
-// 	int	i;
+// 	int i;
 // 	int j;
+// 	int y;
+// 	int x;
+// 	int	tmp1;
+// 	int tmp2;
 
+// 	if (!*env->token.str)
+// 		return ;
 // 	i = 0;
-// 	while (i < env->map.height)
+// 	x = env->token.x;
+// 	y = env->token.y;
+// 	while (i < env->token.height)
 // 	{
-// 		j = 0; 
-// 		while (j < env->map.width)
+// 		j = 0;
+// 		x = env->token.x;
+// 		while (j < env->token.width)
 // 		{
-// 			if (min_around(env, i, j) > -1)
-// 				return (1);
+// 			if (env->token.str[i * env->token.width + j] == '*')
+// 			{
+// 				tmp1 = x;
+// 				tmp2 = y;
+// 				if (x < 0)
+// 					x = env->map.width + x;
+// 				if (y < 0)
+// 					y = env->map.height + y;
+// 				if (x >= env->map.width)
+// 					x = x - env->map.width;
+// 				if (y >= env->map.height)
+// 					y = y - env->map.height;
+				
+// 				if (env->map.str[y * env->map.width + x] == env->player)
+// 					env->map.str[y * env->map.width + x] = ft_tolower(env->player);
+
+// 				x = tmp1;
+// 				y = tmp2;
+// 			}
 // 			j++;
+// 			x++;
 // 		}
 // 		i++;
+// 		y++;
 // 	}
-// 	return (0);
 // }
 
 void		create_heatmap(t_env *env)
@@ -175,21 +191,29 @@ void		create_heatmap(t_env *env)
 	int	i;
 	int j;
 
-	//fprintf(env->debug, "START\n");
 	init_heatmap(env);
-	//print_heatmap(env);
-	//while (is_not_filled(env))
 	fill_heatmap(env);
+	// mark_last_piece(env);
 	i = 0;
 	while (i < env->map.height)
 	{
-		j = 0; 
+		j = 0;
 		while (j < env->map.width)
 		{
 			if (env->map.heat[i * env->map.width + j] == -1)
 				env->map.heat[i * env->map.width + j] = FT_MAX(env->map.width, env->map.height);
+			// else if (env->map.heat[i * env->map.width + j] != -2)
+			// {
+			// 	env->map.heat[i * env->map.width + j] += check_around(env, i, j, env->player);
+			// 	env->map.heat[i * env->map.width + j] -= check_around(env, i, j, ft_tolower(env->player));
+			// }
 			j++;
 		}
 		i++;
 	}
+	// i = -1;
+	// while (i++ < env->map.width * env->map.height)
+	// 	env->map.str[i] = ft_toupper(env->map.str[i]);
+	print_heatmap(env);
+	fprintf(env->debug, "\n\n");
 }

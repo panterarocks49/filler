@@ -12,15 +12,6 @@
 
 #include "filler.h"
 
-static FILE	*start_debug(void)
-{
-	FILE *fp;
-
-	if (!(fp = fopen("debug.log", "w")))
-		return (NULL);
-	return (fp);
-}
-
 void		print_heatmap(t_env *env)
 {
 	int		i;
@@ -41,35 +32,42 @@ void		print_heatmap(t_env *env)
 	fprintf(env->debug, "\n");
 }
 
+int			abs_min(int a, int b)
+{
+	if (a < 0 || b < 0)
+		return (FT_MAX(a, b));
+	else
+		return (FT_MIN(a, b));
+}
+
 int			main(void)
 {
 	t_env	env;
 	char	*line;
 
 	// remove debug
-	env.debug = start_debug();
+	env.debug = fopen("debug.log", "w");
 
 	line = NULL;
 	read_player(&env);
 	read_map_size(&env);
-	if (!(env.map.str = ft_strnew(env.map.height * env.map.width))
-		|| !(env.token.str = ft_strnew(env.map.height * env.map.width))
-		|| !(env.map.heat = (int *)malloc(sizeof(int) * env.map.height * env.map.width)))
+	if (!(env.map.str = ft_strnew(env.map.height * env.map.width)) ||
+		!(env.token.str = ft_strnew(env.map.height * env.map.width)) ||
+		!(env.map.heat = (int *)malloc(sizeof(int) * env.map.height * env.map.width)))
 		return (-1);
 	read_map(&env);
 	create_heatmap(&env);
 	read_token(&env);
 	place_token(&env);
-	//int i = 0;
 	while (1)
 	{
 		skip_line();
 		read_map(&env);
 		create_heatmap(&env);
-		print_heatmap(&env);
-		fprintf(env.debug, "\n\n");
 		read_token(&env);
 		place_token(&env);
+	fclose(env.debug);
+		
 	}
 
 	fclose(env.debug);

@@ -46,6 +46,8 @@ typedef struct	s_env
 	char	opponent;
 }				t_env;
 
+int				abs_min(int a, int b);
+
 void			skip_line(void);
 void			read_player(t_env *env);
 void			read_map_size(t_env *env);
