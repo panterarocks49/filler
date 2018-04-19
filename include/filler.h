@@ -6,16 +6,13 @@
 /*   By: jbrown <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/10 12:54:00 by jbrown            #+#    #+#             */
-/*   Updated: 2018/04/10 12:54:05 by jbrown           ###   ########.fr       */
+/*   Updated: 2018/04/18 20:12:24 by jbrown           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FILLER_H
 # define FILLER_H
-# include "libft.h"
-
-#include <stdio.h>
-#include <stdlib.h>
+# include <libft.h>
 
 typedef struct	s_token
 {
@@ -37,16 +34,11 @@ typedef struct	s_map
 
 typedef struct	s_env
 {
-	// debug !!! remove
-	FILE	*debug;
-
 	t_map	map;
 	t_token	token;
 	char	player;
 	char	opponent;
 }				t_env;
-
-int				abs_min(int a, int b);
 
 void			skip_line(void);
 void			read_player(t_env *env);
@@ -60,10 +52,7 @@ void			place_token(t_env *env);
 
 void			create_heatmap(t_env *env);
 
-
-
-
-void		print_heatmap(t_env *env);
-
+int				safe_idx(t_env *env, int x, int y);
+int				abs_min(int a, int b);
 
 #endif

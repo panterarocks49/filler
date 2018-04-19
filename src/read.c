@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "filler.h"
+#include <filler.h>
 
 void	skip_line(void)
 {
@@ -78,7 +77,6 @@ void	read_token(t_env *env)
 	int		j;
 	int		k;
 
-	line = NULL;
 	get_next_line(0, &line);
 	ptr = line;
 	while (*ptr && !(*ptr >= '0' && *ptr <= '9'))

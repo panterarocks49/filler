@@ -10,41 +10,54 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "filler.h"
+#include <filler.h>
+
+static int	add_heat_around(t_env *env, int i, int j)
+{
+	int	y;
+	int	x;
+	int	count;
+	int a;
+
+	y = i - 3;
+	count = 0;
+	while (y <= i + 3)
+	{
+		x = j - 3;
+		while (x <= j + 3)
+		{
+			a = env->map.heat[safe_idx(env, x, y)];
+			if (a < -1)
+				a += FT_MAX(env->map.height, env->map.width);
+			count += a;
+			x++;
+		}
+		y++;
+	}
+	return (count);
+}
 
 static int	token_heat(t_env *env, int x, int y)
 {
 	int	i;
 	int	j;
-	int	tmp1;
-	int tmp2;
 	int	x_original;
 	int	heat;
 
-	i = 0;
+	i = -1;
 	x_original = x;
 	heat = 0;
-	while (i < env->token.height)
+	while (++i < env->token.height)
 	{
-		j = 0;
+		j = -1;
 		x = x_original;
-		while (j < env->token.width)
+		while (++j < env->token.width)
 		{
-			tmp1 = x;
-			tmp2 = y;
-			if (x < 0)
-				x = env->map.width + x;
-			if (y < 0)
-				y = env->map.height + y;
 			if (env->token.str[i * env->token.width + j] == '*')
-				heat += env->map.heat[y * env->map.width + x];
-			x = tmp1;
-			y = tmp2;
+				heat += add_heat_around(env, y, x);
 			x++;
-			j++;
 		}
 		y++;
-		i++;
 	}
 	return (heat);
 }
@@ -55,14 +68,14 @@ void		place_token(t_env *env)
 	int	y;
 	int	min;
 
-	y = 1 - env->token.height;
 	env->token.x = 0;
 	env->token.y = 0;
 	env->token.min = 2147483647;
-	while (y < env->map.height)
+	y = 0 - env->token.height;
+	while (++y < env->map.height)
 	{
-		x = 1 - env->token.width;
-		while (x < env->map.width)
+		x = 0 - env->token.width;
+		while (++x < env->map.width)
 		{
 			if (is_valid_place(env, x, y))
 			{
@@ -73,9 +86,7 @@ void		place_token(t_env *env)
 					env->token.min = min;
 				}
 			}
-			x++;
 		}
-		y++;
 	}
 	ft_printf("%d %d\n", env->token.y, env->token.x);
 }
