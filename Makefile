@@ -12,14 +12,16 @@
 
 NAME = jbrown.filler
 RM = /bin/rm -f
-CFLAGS = -Wall -Wextra -Werror
+
+FLAGS = -Wall -Wextra -Werror
 
 # filler
 FILES = main read check place heatmap util
-MAIN_INC = -I ./include/
+INCLUDE = -I ./include/
 SRC_DIR = ./src/
+OBJ_DIR := ./obj/
 CFILES = $(patsubst %, $(SRC_DIR)%.c, $(FILES))
-OFILES = $(patsubst %, %.o, $(FILES))
+OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 
 # libftprintf lib
 LFT_DIR = ./libftprintf/
@@ -31,26 +33,29 @@ LFT_LINK = -L $(LFT_DIR) -l ftprintf
 
 all: $(LFT_LIB) $(NAME)
 
-$(OFILES):
-	@gcc $(CFLAGS) $(MAIN_INC) $(LFT_INC) -c $(CFILES)
-
 $(LFT_LIB):
 	@make -C $(LFT_DIR)
 
-$(NAME): $(OFILES)
-	@gcc $(CFLAGS) $(OFILES) $(LFT_LINK) -o $(NAME)
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+	@echo [INFO] Filler Object Files Directory Created
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@gcc $(FLAGS) $(INCLUDE) $(LFT_INC) -o $@ -c $<
+	@echo [INFO] Compiling $< into $@
+
+$(NAME): $(OBJ_DIR) $(OFILES)
+	@gcc $(FLAGS) $(OFILES) $(LFT_LINK) -o $(NAME)
+	@echo [INFO] Filler Binary Created
 
 clean:
-	@$(RM) $(OFILES)
+	@rm -rf $(OBJ_DIR)
+	@echo [INFO] Filler Object Files Directory Destroyed
 	@make -C $(LFT_DIR) clean
 
 fclean: clean
 	@$(RM) $(NAME)
+	@echo [INFO] Filler Binary Destroyed
 	@make -C $(LFT_DIR) fclean
 
 re: fclean all
-
-rel:
-	@$(RM) $(NAME)
-	@$(RM) $(OFILES)
-	@make
